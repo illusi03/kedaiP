@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, Text, TouchableOpacity, FlatList, Image, ScrollView, ActivityIndicator, ToastAndroid } from 'react-native'
+import {
+  View,
+  Text, TouchableOpacity, FlatList, Image, ScrollView,
+  ActivityIndicator, Animated, Easing,
+  Dimensions
+} from 'react-native'
 import IconIon from 'react-native-vector-icons/Ionicons'
 import IconAntDesign from 'react-native-vector-icons/AntDesign'
 import IconMaterialCom from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -14,9 +19,10 @@ import CompTouchable from './CompTouchable'
 import { reRenderMenu, getMenuWhereCategory, getMenu } from '../../_actions/Menu'
 import { reRenderCategory, getCategory } from '../../_actions/Category'
 import { addOrder, editOrder, addOrderBiasa } from '../../_actions/Order'
-import { setIntervalNya, counterNya } from '../../_actions/Home'
+import { setIntervalNya, counterNya, isOrdered } from '../../_actions/Home'
 import CompListMenu from './CompListMenu'
 
+var { height, width } = Dimensions.get('window')
 
 class ScreenHome extends Component {
   state = {
@@ -24,15 +30,37 @@ class ScreenHome extends Component {
     idTransaction: 0,
     initNameCategory: 'All',
     startedMenus: [],
-    getDataMenuSatuan : false,
+    getDataMenuSatuan: false,
     toogleStarted: '',
     isQtyMenu: false,
-    refreshFlatMenu: false
+    fadeValue: new Animated.Value(0),
+    xyValue: new Animated.ValueXY({ x: 12, y:height  })
   }
-  refreshMenu = () => {
-    this.setState({
-      refreshFlatMenu: !this.state.refreshFlatMenu
-    })
+  callBackMenus = (bisa) => {
+    if(bisa){
+      this.bouncerIn()
+    }else{
+      this.bouncerOut()
+    }
+  }
+  bouncerIn = () => {
+    Animated.spring(this.state.xyValue, {
+      toValue: { x: 12, y: height-110 },
+      duration: 2000
+    }).start()
+  }
+  bouncerOut = () => {
+    Animated.spring(this.state.xyValue, {
+      toValue: { x: 12, y: height+100 },
+      duration: 1000
+    }).start()
+  }
+  fadeIn = () => {
+    Animated.timing(this.state.fadeValue, {
+      toValue: 1, //Ke angka berapa
+      duration: 850, //dengan berapa Milisecond
+      easing: Easing.linear
+    }).start()
   }
   convertIntToTime = (given_seconds) => {
     dateObj = new Date(given_seconds * 1000);
@@ -79,115 +107,7 @@ class ScreenHome extends Component {
       startedMenus
     });
   }
-  aksiAddOrderMenus = async (menuId, transactionId) => {
-    //Cari data Jika isPaid false , Input Order.
-    //Cek Data Transaksi (Apakah sudah STATUS PAID / BELUM)
-    try {
-      await this.refreshMenu()
-      //Ambil Data Menu , By Filter Data MenuId
-      let menuObj = await this.props.Menu.dataItem.filter((item, index) => {
-        if (item.id == menuId) {
-          return item
-        }
-      })
-      let arrTemporerData = {
-        menuId,
-        transactionId,
-        price: menuObj[0].price,
-        qty: 1
-      }
-      //Seleksi , jika ada Data Tambah Qty.Jika Kosong Tambah Data
-      let adaDataMenu = false
-      let noIndex = 0
-      let tempArrMenu = []
-      let qtyLama = 0
-      if (this.props.Order.dataItemTmp) {
-        await this.props.Order.dataItemTmp.map((item, index) => {
-          if ((item.menuId == menuId) & (item.transactionId == transactionId)) {
-            adaDataMenu = true
-            noIndex = index
-            qtyLama = item.qty + 1
-          }
-        })
-      }
-      if (adaDataMenu) {
-        //Ambil Data Menu , By Filter Data MenuId
-        let tmpMenuObj = await this.props.Menu.dataItem.filter((item, index) => {
-          if (item.id == menuId) {
-            return item
-          }
-        })
-        tempArrMenu = this.props.Order.dataItemTmp
-        tempArrMenu[noIndex] = {
-          menuId: tmpMenuObj[0].id,
-          transactionId,
-          price: tmpMenuObj[0].price,
-          qty: qtyLama
-        }
-        await this.props.dispatch(addOrderBiasa(tempArrMenu))
-      } else {
-        //Insert ke dispatch Temp Order
-        await this.props.dispatch(addOrderBiasa([
-          ...this.props.Order.dataItemTmp,
-          arrTemporerData
-        ]))
-      }
-      await console.warn(this.props.Order.dataItemTmp)
 
-    } catch (e) {
-      alert(`Alert : ${e}`)
-    }
-
-    /*
-    let transaksiData
-    let menuData
-    try {
-      transaksiData = await axios.get(`${Constanta.host}/transaction/${transactionId}`)
-      menuData = await axios.get(`${Constanta.host}/menu/${menuId}`)
-    } catch (e) {
-      console.log(e)
-    }
-    // console.log(`Transaksi Data : ${JSON.stringify(transaksiData)}`)
-    // console.log(`Menu Data : ${JSON.stringify(menuData)}`)
-    // console.log(`jmlMenuData Data : ${JSON.stringify(jmlMenuDataByTrans)}`)
-
-    if (!transaksiData.data.isPaid) {
-      //Cek jika ada Menu yg sudah terdaftar di Order MenuId dan TransaksiId, Tambah
-      //Cek Jumlah Order di setiap Transaksi
-      //const jumlahSemuaMenuByTransaksi = await axios.get(`${Constanta.host}/transaction/${transactionId}`)
-      const jmlMenuDataByTrans = await axios.get(`${Constanta.host}/order/transactionId/${transactionId}/menuId/${menuId}`)
-
-      if (!jmlMenuDataByTrans.data) {
-        const dataJadi = {
-          menuId,
-          transactionId,
-          price: menuData.data.price,
-          qty: 1
-        }
-        ToastAndroid.show('Berhasil Menambahkan Order', ToastAndroid.SHORT);
-        this.props.dispatch(addOrder(dataJadi))
-      } else {
-        if (jmlMenuDataByTrans.data.status == null) {
-          //Ambil dulu jumlah Qty nya, lalu Tambahkan + 1
-          //Patch Data Where IDOrderNya
-          let idOrderNya = jmlMenuDataByTrans.data.id
-          let jmlDataNya = jmlMenuDataByTrans.data.qty
-          jmlDataNya = jmlDataNya + 1
-          const dataJadi = {
-            qty: jmlDataNya
-          }
-          ToastAndroid.show(`Berhasil Menambahkan Order , Jumlah : ${jmlDataNya}`, ToastAndroid.SHORT);
-          this.props.dispatch(editOrder(idOrderNya, dataJadi))
-        } else {
-          //Data sudah di confirm
-          ToastAndroid.show(`Data sudah terkonfirmasi , Silakan Tunggu Pesanan Anda`, ToastAndroid.SHORT);
-        }
-      }
-    } else {
-      alert('Sudah Bayar')
-    }
-    */
-  }
   //Tahap Percobaan
   setStartedMenus = (menuId) => {
     let arrTemporer = this.state.startedMenus
@@ -214,15 +134,15 @@ class ScreenHome extends Component {
         this.props.dispatch(counterNya(this.props.Home.timer))
       }, 1000)
     ))
+    // this.fadeIn()
     // this.cekIsStartedMenus()
   }
   render() {
-
     return (
       <View style={[Styles.container, {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 5
+        padding: 0
       }]}>
         {/* Header */}
         <View style={[Styles.content, Styles.cardSimpleContainer, {
@@ -249,20 +169,43 @@ class ScreenHome extends Component {
         </View>
 
         {/* List Category */}
-        <View style={[Styles.content, Styles.cardSimpleContainer, {
+        <View style={[Styles.content, {
           backgroundColor: Color.whiteColor,
           width: '100%',
           height: 75,
           justifyContent: 'center',
           alignItems: 'flex-start',
-          marginBottom: 10,
-          paddingBottom: 10
+          marginBottom: 5,
+          paddingBottom: 5
         }]}>
-          {this.props.Menu.isLoading ?
-            <ActivityIndicator></ActivityIndicator>
+          {this.props.Category.isLoading ?
+            false
             :
             <FlatList
               horizontal={true}
+              ListHeaderComponent={() => {
+                return (
+                  <TouchableOpacity style={[Styles.cardSimpleContainer, {
+                    backgroundColor: Color.darkPrimaryColor,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 5,
+                    margin: 5,
+                    width: 100,
+                    flex: 1
+                  }]}
+                    onPress={() => this.props.dispatch(getMenu())}
+                  >
+                    <Text style={[Styles.hurufKonten, {
+                      fontSize: 15,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      color: Color.whiteColor
+                    }]}>
+                      All</Text>
+                  </TouchableOpacity>
+                )
+              }}
               showsHorizontalScrollIndicator={false}
               data={this.props.Category.dataItem}
               keyExtractor={(item) => item.id.toString()}
@@ -278,91 +221,127 @@ class ScreenHome extends Component {
         </View>
 
         {/* List Menu */}
-        <View style={[Styles.content, Styles.cardSimpleContainer, {
+        <View style={[Styles.content, {
           backgroundColor: Color.whiteColor,
           width: '100%',
           flex: 7,
           justifyContent: 'center',
           alignItems: 'flex-start',
-          marginBottom: 5
+          marginBottom: 0
         }]}>
           <View style={{ height: '100%', width: '100%' }}>
-            <Text style={[Styles.hurufKonten, {
-              fontSize: 17,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              marginBottom: 5
-            }]}>List Menu From {this.state.initNameCategory} Category</Text>
             {this.props.Menu.isLoading ?
-              <ActivityIndicator></ActivityIndicator>
+              <ActivityIndicator size={70} color={Color.darkPrimaryColor} style={{
+                flex: 1,
+                alignSelf: 'center'
+              }}></ActivityIndicator>
               :
               <FlatList
-                data={this.props.Menu.dataItem}
+                data={this.props.Menu.dataItemHomeTampilan}
+                ListHeaderComponent={() => {
+                  return (
+                    <Text style={[Styles.hurufKonten, {
+                      fontSize: 17,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      marginBottom: 5
+                    }]}>List Menu From {this.state.initNameCategory} Category</Text>
+                  )
+                }}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 extraData={[this.state.refreshFlatMenu]}
                 renderItem={({ item }) => {
                   return (
-                    <CompListMenu itemNya={item} idTransaction={this.state.idTransaction} />
-                  )}
-                }
+                    <CompListMenu
+                      itemNya={item}
+                      idTransaction={this.state.idTransaction} 
+                      callBackNya={this.callBackMenus}
+                      />
+                  )
+                }}
+                ListFooterComponent={() => {
+                  if (this.props.Home.isOrdered) {
+                    return (
+                      <View style={{
+                        width: '95%',
+                        height: 100,
+                        backgroundColor: 'transparent'
+                      }}></View>
+                    )
+                  }
+                  return (<View></View>)
+                }}
               />
             }
           </View>
         </View>
-
-        {/* Option */}
-        <View style={[Styles.content, Styles.cardSimpleContainer, {
-          backgroundColor: Color.whiteColor,
-          width: '100%',
-          flex: 1,
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          flexDirection: 'row'
-        }]}>
-
-          <TouchableOpacity style={[Styles.cardSimpleContainer, {
-            backgroundColor: Color.darkPrimaryColor,
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 5,
-            margin: 5,
-            height: '100%',
-            flex: 1,
-            flexDirection: 'row'
-          }]}
-            onPress={() => this.aksiListOrder()}
-          >
-            <Text style={[Styles.hurufKonten, {
-              fontSize: 15,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              color: Color.whiteColor
-            }]}>
-              LIST ORDER</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[Styles.cardSimpleContainer, {
-            backgroundColor: Color.darkPrimaryColor,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            padding: 5,
-            margin: 5,
-            height: '100%',
-            flexDirection: 'row'
-          }]}
-            onPress={() => this.props.navigation.navigate('SWScreenViewbill')}
-          >
-            <Text style={[Styles.hurufKonten, {
-              fontSize: 15,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              color: Color.whiteColor
-            }]}>
-              VIEW BILL</Text>
-          </TouchableOpacity>
-
-        </View>
+        {true ?
+          <Animated.View style={[this.state.xyValue.getLayout(), {
+            width: '95%',
+            height: 75,
+            position: 'absolute',
+            bottom: 0,
+            marginBottom: 25,
+            borderRadius: 5
+          }]}>
+            <TouchableOpacity style={[Styles.cardSimpleContainer, {
+              backgroundColor: Color.darkPrimaryColor,
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              flexDirection: 'row',
+              paddingVertical: 10,
+              paddingHorizontal: 15
+            }]}
+              activeOpacity={0.9}
+              onPress={() => this.props.navigation.navigate('SWScreenViewbill')}
+              // onPress={this.bouncer}
+            >
+              <View style={{
+                flex: 1
+              }}>
+                <View style={{
+                  flexDirection: 'row'
+                }}>
+                  <Text style={[Styles.hurufKonten, {
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    color: Color.whiteColor
+                  }]}>
+                    {this.props.Home.jmlKeranjang} Item | </Text>
+                  <Text style={[Styles.hurufKonten, {
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    color: Color.whiteColor
+                  }]}>
+                    {convertToRupiah(this.props.Home.jmlHarga)} | </Text>
+                  <Text style={[Styles.hurufKonten, {
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    color: Color.whiteColor,
+                    alignSelf: 'center'
+                  }]}>
+                    {convertToRupiah(this.props.Home.estimasiHarga + this.props.Home.jmlHarga)} (Est)</Text>
+                </View>
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: 15,
+                  fontWeight: 'bold',
+                  color: Color.whiteColor,
+                  alignSelf: 'flex-start',
+                  marginTop: 5
+                }]}>
+                  Please tap for detail bill</Text>
+              </View>
+              <View style={{
+                alignSelf: 'center'
+              }}>
+                <IconMaterialCom name='cart' size={40} color={Color.whiteColor}></IconMaterialCom>
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
+          : false}
       </View>
     )
   }

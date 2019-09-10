@@ -1,8 +1,14 @@
+import Store from '../_redux/Store'
+
 initStateHome = {
   isLoading: true,
   timer: 0,
   timerEvent: '',
-  timerString: '00:00:00'
+  timerString: '00:00:00',
+  isOrdered: false,
+  jmlKeranjang: 0,
+  jmlHarga:0,
+  estimasiHarga:0
 }
 
 convertIntToTime = (given_seconds) => {
@@ -22,23 +28,36 @@ export default Home = (state = initStateHome, action) => {
     //Untuk Menus Umum
     case 'SET_INTERVAL_EVENT':
       return {
-        timer:state.timer,
-        timerString:state.timerString,
+        ...state,
+        timer: state.timer,
+        timerString: state.timerString,
         timerEvent: action.payload
       }
       break
     case 'SET_INTERVAL_COUNTER':
       return {
-        timerEvent:state.timerEvent,
+        ...state,
+        timerEvent: state.timerEvent,
         timer: action.payload,
         timerString: convertIntToTime(action.payload)
       }
       break
     case 'REMOVE_INTERVAL':
       return {
-        timerEvent:null,
-        timer:0,
-        timerString:'00:00:00'
+        ...state,
+        timerEvent: null,
+        timer: 0,
+        timerString: '00:00:00'
+      }
+      break
+
+    case 'SET_ISORDERED':
+      return {
+        ...state,
+        isOrdered: action.payload.isOrdered,
+        jmlKeranjang: action.payload.jmlKeranjang,
+        jmlHarga: action.payload.jmlHarga,
+        estimasiHarga: action.payload.estimasiHarga
       }
       break
     default:
@@ -46,3 +65,9 @@ export default Home = (state = initStateHome, action) => {
       break
   }
 }
+// const mapStateToProps = (state) => {
+//   return{
+//     Order:state.Order
+//   }
+// }
+// export default connect(mapStateToProps)(Home)

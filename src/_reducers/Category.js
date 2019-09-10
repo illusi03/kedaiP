@@ -1,6 +1,7 @@
 initialStateCategory = {
   dataItem: '',
-  isLoading: true
+  isLoading: true,
+  isRejected:false
 }
 
 export default Category = (state = initialStateCategory, action) => {
@@ -9,21 +10,24 @@ export default Category = (state = initialStateCategory, action) => {
     case 'GET_CATEGORY_PENDING':
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
+        isRejected:false
       }
       break
     case 'GET_CATEGORY_FULFILLED':
       return {
         ...state,
         dataItem: action.payload.data,
-        isLoading: false
+        isLoading: false,
+        isRejected:false
       }
       break
     case 'GET_CATEGORY_REJECTED':
       return {
         ...state,
         dataItem: null,
-        isLoading: false
+        isLoading: false,
+        isRejected:true
       }
       break
 
@@ -31,7 +35,8 @@ export default Category = (state = initialStateCategory, action) => {
       return {
         ...state,
         dataItem: action.payload,
-        isLoading: false
+        isLoading: false,
+        isRejected:false
       }
       break
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ActivityIndicator,Text } from 'react-native'
+import { View, ActivityIndicator,Text,BackHandler} from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 import {connect} from 'react-redux'
 
@@ -21,7 +21,7 @@ class StackCheck extends Component {
         await this.props.navigation.navigate('StackPublic')
       }
     } catch (e) { 
-      alert(e)
+      alert(`Check your connection : ${e}`)
     }
   }
   render() {

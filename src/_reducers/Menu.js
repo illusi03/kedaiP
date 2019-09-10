@@ -1,6 +1,8 @@
 initialStateMenu = {
   dataItem: '',
-  isLoading: true
+  dataItemHomeTampilan:[],
+  isLoading: true,
+  isRejected:false
 }
 
 export default Menu = (state = initialStateMenu, action) => {
@@ -9,28 +11,32 @@ export default Menu = (state = initialStateMenu, action) => {
     case 'GET_MENU_PENDING':
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
+        isRejected:false
       }
       break
     case 'GET_MENU_FULFILLED':
       return {
         ...state,
         dataItem: action.payload.data,
-        isLoading: false
+        dataItemHomeTampilan: action.payload.data,
+        isLoading: false,
+        isRejected:false
       }
       break
     case 'GET_MENU_REJECTED':
       return {
         ...state,
         dataItem: null,
-        isLoading: false
+        dataItemHomeTampilan: null,
+        isLoading: false,
+        isRejected:true
       }
       break
 
     case 'RE_RENDER_MENU':
       return {
         ...state,
-        dataItem: action.payload,
         isLoading: false
       }
       break
@@ -39,22 +45,25 @@ export default Menu = (state = initialStateMenu, action) => {
     case 'GET_CATEGORY_MENUS_PENDING':
       return {
         ...state,
-        dataItem: null,
-        isLoading: true
+        dataItemHomeTampilan: null,
+        isLoading: true,
+        isRejected:false
       }
       break
     case 'GET_CATEGORY_MENUS_FULFILLED':
       return {
         ...state,
-        dataItem: action.payload.data.menus,
-        isLoading: false
+        dataItemHomeTampilan: action.payload.data.menus,
+        isLoading: false,
+        isRejected:false
       }
       break
     case 'GET_CATEGORY_MENUS_REJECTED':
       return {
         ...state,
-        dataItem: null,
-        isLoading: false
+        dataItemHomeTampilan: null,
+        isLoading: false,
+        isRejected:true
       }
       break
     default:

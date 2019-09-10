@@ -15,3 +15,16 @@ export const hapusInterval = () => {
     type:'REMOVE_INTERVAL'
   }
 }
+export const setIsOrdered = (data) => {
+  /*
+  Tipe Objek ={
+    isOrdered,
+    jmlKeranjang,
+    jmlHarga
+  }
+  */
+  return {
+    type:'SET_ISORDERED',
+    payload:data
+  }
+}
