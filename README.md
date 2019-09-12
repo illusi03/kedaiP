@@ -4,20 +4,20 @@ Nama aplikasi ini adalah "PapaLapar" , Aplikasi komputasi dari pemesanan makanan
 *NOTE : LINK DEMO APLIKASI ADA DIPALING BAWAH
 
 ## GIF Aplikasi
-![Kedai_PapaLapar](https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Kedai_papalapar.gif)
+![Kedai_PapaLapar](https://github.com/illusi03/kedaiP/blob/master/Screenshots/Kedai_papalapar.gif)
 
 ## Gambar Aplikasi
 <p float="left">
-  <img src="https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Screenshot_2019-09-03-08-42-16.png" width="200" height="350" alt="Choose a Service Type"/>
-  <img src="https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Screenshot_2019-09-03-08-42-55.png" width="200" height="350" alt="Pick Location"/>
-  <img src="https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Screenshot_2019-09-03-08-44-38.png" width="200" height="350" alt="Finding the truck"/>
-  <img src="https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Screenshot_2019-09-03-08-44-45.png" width="200" height="350" alt="Order History"/>
+  <img src="https://github.com/illusi03/kedaiP/blob/master/Screenshots/Screenshot_2019-09-11-23-33-01.png" width="200" height="350" alt="Choose a Service Type"/>
+  <img src="https://github.com/illusi03/kedaiP/blob/master/Screenshots/Screenshot_2019-09-11-23-33-12.png" width="200" height="350" alt="Pick Location"/>
+  <img src="https://github.com/illusi03/kedaiP/blob/master/Screenshots/Screenshot_2019-09-11-23-33-16.png" width="200" height="350" alt="Finding the truck"/>
+  <img src="https://github.com/illusi03/kedaiP/blob/master/Screenshots/Screenshot_2019-09-11-23-33-20.png" width="200" height="350" alt="Order History"/>
 </p>
 <p float="left">
-  <img src="https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Screenshot_2019-09-03-08-44-59.png" width="200" height="350" alt="Choose a Service Type"/>
-  <img src="https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Screenshot_2019-09-03-08-45-03.png" width="200" height="350" alt="Pick Location"/>
-  <img src="https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Screenshot_2019-09-03-08-45-15.png" width="200" height="350" alt="Finding the truck"/>
-  <img src="https://github.com/illusi03/RN_Kedai/blob/master/Screenshots/Screenshot_2019-09-03-08-45-20.png" width="200" height="350" alt="Order History"/>
+  <img src="https://github.com/illusi03/kedaiP/blob/master/Screenshots/Screenshot_2019-09-11-23-33-24.png" width="200" height="350" alt="Choose a Service Type"/>
+  <img src="https://github.com/illusi03/kedaiP/blob/master/Screenshots/Screenshot_2019-09-11-23-33-28.png" width="200" height="350" alt="Pick Location"/>
+  <img src="https://github.com/illusi03/kedaiP/blob/master/Screenshots/Screenshot_2019-09-11-23-33-30.png" width="200" height="350" alt="Finding the truck"/>
+  <img src="https://github.com/illusi03/kedaiP/blob/master/Screenshots/Screenshot_2019-09-11-23-33-44.png" width="200" height="350" alt="Order History"/>
 </p>
 
 ## Fitur 
