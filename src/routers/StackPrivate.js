@@ -7,13 +7,15 @@ import IconAnt from 'react-native-vector-icons/AntDesign'
 import { Styles, Color } from '../res/Styles'
 import ScreenHome from '../app/home_private/ScreenHome'
 import ScreenViewbill from '../app/viewbill/ScreenViewbill'
+import ScreenViewbillConfirmed from '../app/viewbill/ScreenViewbillConfirmed'
 import ScreenCart from '../app/cart/ScreenCart'
 import ScreenPay from '../app/pay/ScreenPay'
 
 const SwitchBill = createSwitchNavigator({
   SWScreenCart:ScreenCart,
   SWScreenViewbill:ScreenViewbill,
-  SWScreenPay:ScreenPay
+  SWScreenPay:ScreenPay,
+  SWScreenViewbillConfirmed:ScreenViewbillConfirmed
 },{
   initialRouteName:'SWScreenCart'
 })

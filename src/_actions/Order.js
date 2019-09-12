@@ -63,3 +63,8 @@ export const addOrderBiasa = (data) => {
     payload: data
   }
 }
+export const hapusAllOrder = () => {
+  return {
+    type: 'REMOVE_ALL_ORDER',
+  }
+}

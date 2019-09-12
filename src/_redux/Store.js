@@ -7,12 +7,13 @@ import Category from '../_reducers/Category'
 import Transaction from '../_reducers/Transaction'
 import Order from '../_reducers/Order'
 import Home from '../_reducers/Home'
+import Timer from '../_reducers/Timer'
 
 // this global states
 const reducers = combineReducers({
-    Menu,Category,Transaction,Order,Home
+  Menu, Category, Transaction, Order, Home, Timer
 })
 export default Store = createStore(
-    reducers,
-    applyMiddleware(promise, logger)
+  reducers,
+  applyMiddleware(promise, logger)
 )  

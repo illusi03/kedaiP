@@ -17,9 +17,9 @@ const CompOptionBot = (props) => {
     tax,
     discount,
     total:totalGrand,
-    isPaid:true
+    isPaid:false
   }
-  // props.dispatch(setTransactionInput(objCompOption))
+  props.dispatch(setTransactionInput(objCompOption))
   return (
     /* List Menu (Status , Name dan Price) */
     <View style={{

@@ -11,7 +11,8 @@ export const Color = {
   deviderColor : '#BDBDBD',
   whiteColor : '#FFFFFF',
   errorColor : '#E53935',
-  successColor: '#018786'
+  successColor: '#28A745',
+  warningColor: '#FABD3B'
 }
 export const Styles = StyleSheet.create({
   container : {

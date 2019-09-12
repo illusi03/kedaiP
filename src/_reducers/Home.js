@@ -1,14 +1,17 @@
-import Store from '../_redux/Store'
+import {
+  Animated,
+  Easing,
+  Dimensions
+} from 'react-native'
+var { height, width } = Dimensions.get('window')
 
 initStateHome = {
   isLoading: true,
-  timer: 0,
-  timerEvent: '',
-  timerString: '00:00:00',
   isOrdered: false,
   jmlKeranjang: 0,
-  jmlHarga:0,
-  estimasiHarga:0
+  jmlHarga: 0,
+  estimasiHarga: 0,
+  xyValue: new Animated.ValueXY({ x: 12, y: height + 100 })
 }
 
 convertIntToTime = (given_seconds) => {
@@ -26,31 +29,6 @@ convertIntToTime = (given_seconds) => {
 export default Home = (state = initStateHome, action) => {
   switch (action.type) {
     //Untuk Menus Umum
-    case 'SET_INTERVAL_EVENT':
-      return {
-        ...state,
-        timer: state.timer,
-        timerString: state.timerString,
-        timerEvent: action.payload
-      }
-      break
-    case 'SET_INTERVAL_COUNTER':
-      return {
-        ...state,
-        timerEvent: state.timerEvent,
-        timer: action.payload,
-        timerString: convertIntToTime(action.payload)
-      }
-      break
-    case 'REMOVE_INTERVAL':
-      return {
-        ...state,
-        timerEvent: null,
-        timer: 0,
-        timerString: '00:00:00'
-      }
-      break
-
     case 'SET_ISORDERED':
       return {
         ...state,
@@ -60,14 +38,38 @@ export default Home = (state = initStateHome, action) => {
         estimasiHarga: action.payload.estimasiHarga
       }
       break
+
+    case 'SET_ANIMATION_ORDER':
+      if (action.jenis == 'in') {
+        Animated.spring(state.xyValue, {
+          toValue: { x: 12, y: height - 120 },
+          duration: 1000
+        }).start()
+      } else {
+        Animated.spring(state.xyValue, {
+          toValue: { x: 12, y: height + 100 },
+          duration: 1000
+        }).start()
+      }
+      return {
+        ...state
+      }
+      break
+
+    case 'CLEAR_DATA_HOME':
+      return {
+        ...state,
+        isLoading: true,
+        isOrdered: false,
+        jmlKeranjang: 0,
+        jmlHarga: 0,
+        estimasiHarga: 0,
+        xyValue: new Animated.ValueXY({ x: 12, y: height + 100 })
+      }
+      break
+
     default:
       return state
       break
   }
 }
-// const mapStateToProps = (state) => {
-//   return{
-//     Order:state.Order
-//   }
-// }
-// export default connect(mapStateToProps)(Home)

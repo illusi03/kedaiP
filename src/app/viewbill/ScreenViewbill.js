@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image, Alert } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import IconIon from 'react-native-vector-icons/Ionicons'
@@ -8,8 +8,9 @@ import IconOctic from 'react-native-vector-icons/Octicons'
 
 import { Styles, Color } from '../../res/Styles'
 import { getTransaction, editTransaction } from '../../_actions/Transaction'
-import { hapusInterval,setIsOrdered} from '../../_actions/Home'
-import { addOrderBiasa} from '../../_actions/Order'
+import { hapusInterval, setIsOrdered, setAnimationOrder } from '../../_actions/Home'
+import { addOrderBiasa } from '../../_actions/Order'
+import { getMenu } from '../../_actions/Menu'
 import CompListOrder from './CompListOrder'
 import CompOptionBot from './CompOptionBot'
 
@@ -19,16 +20,19 @@ class ScreenViewbill extends Component {
     isNotConfirm: false,
     isAdaBarang: false,
     dataOrderMenu: [],
-    idTrans:'',
+    idTrans: '',
     dataNow: [],
     isOrdered: false,
-    idTrans:0
+    idTrans: 0
   }
   aksiCallBill = async () => {
-    // PATCH tbl transaksi berdasarkan ID
-    // Data yg dipatch {Sub_total,discount,serviceCharge,tax,total,isPaid}
-    // Insert tbl transaksi {no_tbl,isPaid=false}, ambil IDTransaksi simpan di Async idTransaction
-
+    let orders = []
+    await this.props.Order.dataItemTmp.map( (item,index) => {
+      item.status = false
+      orders.push(item)
+    })
+    await this.props.dispatch(addOrderBiasa(orders))
+    await this.props.navigation.navigate('SWScreenViewbillConfirmed')
   }
 
   aksiAddOrder = async (menuId, transactionId = null) => {
@@ -132,14 +136,19 @@ class ScreenViewbill extends Component {
       jmlHarga: jmlHarga,
       estimasiHarga: 15 / 100 * jmlHarga
     }
+    this.setState({
+      subStateTotal: ObjHomeBottomOption.jmlHarga,
+      isOrdered: ObjHomeBottomOption.isOrdered
+    })
     this.props.dispatch(setIsOrdered(ObjHomeBottomOption))
+    if (!ObjHomeBottomOption.isOrdered) {
+      this.props.navigation.navigate('ScreenHome')
+    }
   }
-
-
   getOrderList = async () => {
     const idTrans = await AsyncStorage.getItem('idTransaction')
     await this.setState({
-      idTrans:idTrans
+      idTrans: idTrans
     })
     let ordersProps = this.props.Order.dataItemTmp
     let menusProps = this.props.Menu.dataItem
@@ -155,6 +164,9 @@ class ScreenViewbill extends Component {
               ...itemMenu
             }
           }
+          this.setState({
+            isOrdered: true
+          })
         }
       })
       const tmpHarga = itemOrder.qty * itemOrder.price
@@ -162,149 +174,156 @@ class ScreenViewbill extends Component {
     })
     await this.setState({
       dataOrderMenu: ordersProps,
-      subStateTotal: jmlHargaTotal
+      subStateTotal: jmlHargaTotal,
     })
   }
   componentDidMount() {
     this.getOrderList()
   }
+  componentWillUnmount() {
+    if (!this.state.isOrdered) {
+      this.props.dispatch(setAnimationOrder('out'))
+    }
+    this.props.dispatch(getMenu())
+  }
   render() {
     return (
-      <View style={[Styles.container, {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        padding: 10
-      }]}>
-        <View style={[Styles.content, Styles.cardSimpleContainer, {
-          backgroundColor: Color.whiteColor,
-          width: '100%',
-          height: '100%',
+      this.state.isOrdered ?
+        <View style={[Styles.container, {
           justifyContent: 'flex-start',
-          alignItems: 'center'
+          alignItems: 'center',
+          padding: 10
         }]}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <TouchableOpacity
-              style={{ flex: 1, alignSelf: 'flex-start' }}
-              onPress={() => this.props.navigation.navigate('ScreenHome')}
-            >
-              <IconIon name='md-arrow-round-back' size={33}></IconIon>
-            </TouchableOpacity>
-            <Text style={[Styles.hurufKonten, {
-              fontSize: 20,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              marginBottom: 5,
-              flex: 1
-            }]}>
-              Billing </Text>
-            <Text style={[Styles.hurufKonten, {
-              fontSize: 20,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              marginBottom: 5,
-              flex: 1
-            }]}>
-            </Text>
-          </View>
-
-          {/* Divider */}
-          <View
-            style={{
-              borderBottomColor: Color.darkPrimaryColor,
-              borderBottomWidth: 2,
-              width: '100%',
-              marginVertical: 5
-            }}
-          />
-          <FlatList
-            data={this.state.dataOrderMenu}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => {
-              return (
-                <CompListOrder
-                  item={item}
-                  transactionId={this.state.idTrans}
-                  onPressAdd={ () => this.aksiAddOrder(item.menuId)}
-                  onPressMin={ () => this.aksiRemoveOrder(item.menuId)}
-                />)
-            }}
-            style={{
-              flex: 1,
-              width: '100%'
-            }}
-          />
-          {/* Divider */}
-          <View
-            style={{
-              borderBottomColor: Color.darkPrimaryColor,
-              borderBottomWidth: 2,
-              width: '100%',
-              marginVertical: 5
-            }}
-          />
-
-          {/* Option Bawah */}
-          <View style={[Styles.cardSimpleContainer, {
-            elevation: 2,
-            height: 150,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 5,
+          <View style={[Styles.content, Styles.cardSimpleContainer, {
+            backgroundColor: Color.whiteColor,
+            width: '100%',
+            height: '100%',
+            justifyContent: 'flex-start',
+            alignItems: 'center'
           }]}>
-            <CompOptionBot subTotal={this.state.subStateTotal} />
-          </View>
-
-          {/* Button Call) */}
-          <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 15
-          }}>
-            <TouchableOpacity style={[Styles.cardSimpleContainer, {
-              backgroundColor: Color.darkPrimaryColor,
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              padding: 5,
-              margin: 5,
-              height: '100%',
-              flexDirection: 'row'
-            }]}
-            >
-              <IconOctic name='checklist' color={Color.whiteColor} size={25} style={{
-                marginHorizontal: 10
-              }}></IconOctic>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                style={{ flex: 1, alignSelf: 'flex-start' }}
+                onPress={() => this.props.navigation.navigate('ScreenHome')}
+              >
+                <IconIon name='md-arrow-round-back' size={33}></IconIon>
+              </TouchableOpacity>
               <Text style={[Styles.hurufKonten, {
-                fontSize: 15,
+                fontSize: 20,
                 fontWeight: 'bold',
                 textAlign: 'center',
-                color: Color.whiteColor,
-                marginRight: 10
+                marginBottom: 5,
+                flex: 1
               }]}>
-                CONFIRM</Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={[Styles.cardSimpleContainer, {
-              backgroundColor: Color.errorColor,
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              padding: 5,
-              margin: 5,
-              height: '100%',
-              flexDirection: 'row'
-            }]}
-            >
+                Billing </Text>
               <Text style={[Styles.hurufKonten, {
-                fontSize: 15,
+                fontSize: 20,
                 fontWeight: 'bold',
                 textAlign: 'center',
-                color: Color.whiteColor
+                marginBottom: 5,
+                flex: 1
               }]}>
-                CONFIRM FIRST BEFORE CALL BILL
-                </Text>
-            </TouchableOpacity> */}
-          </View>
+              </Text>
+            </View>
 
-        </View>
-      </View>
+            {/* Divider */}
+            <View
+              style={{
+                borderBottomColor: Color.darkPrimaryColor,
+                borderBottomWidth: 2,
+                width: '100%',
+                marginVertical: 5
+              }}
+            />
+
+            <FlatList
+              data={this.state.dataOrderMenu}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => {
+                return (
+                  <CompListOrder
+                    item={item}
+                    transactionId={this.state.idTrans}
+                    onPressAdd={() => this.aksiAddOrder(item.menuId)}
+                    onPressMin={() => this.aksiRemoveOrder(item.menuId)}
+                  />)
+              }}
+              style={{
+                flex: 1,
+                width: '100%'
+              }}
+            />
+            {/* Divider */}
+            <View
+              style={{
+                borderBottomColor: Color.darkPrimaryColor,
+                borderBottomWidth: 2,
+                width: '100%',
+                marginVertical: 5
+              }}
+            />
+
+            {/* Option Bawah */}
+            <View style={[Styles.cardSimpleContainer, {
+              elevation: 2,
+              height: 150,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 5,
+            }]}>
+              <CompOptionBot subTotal={this.state.subStateTotal} />
+            </View>
+
+            {/* Button Call) */}
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 15
+            }}>
+              <TouchableOpacity style={[Styles.cardSimpleContainer, {
+                backgroundColor: Color.darkPrimaryColor,
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                padding: 5,
+                margin: 5,
+                height: '100%',
+                flexDirection: 'row'
+              }]}
+                onPress={ () => 
+                  Alert.alert(
+                    'Confirm Order',
+                    'Are you sure to order this ?',
+                    [
+                      {
+                        text: 'No',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Yes', onPress: () => {
+                          this.aksiCallBill()
+                        }
+                      },
+                    ],
+                    { cancelable: false },
+                  )
+                }
+              >
+                <IconOctic name='checklist' color={Color.whiteColor} size={25} style={{
+                  marginHorizontal: 10
+                }}></IconOctic>
+                <Text style={[Styles.hurufKonten, {
+                  fontSize: 15,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  color: Color.whiteColor,
+                  marginRight: 10
+                }]}>
+                  CONFIRM</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View >
+        : false
     )
   }
 }

@@ -1,20 +1,3 @@
-export const setIntervalNya = (timeEvent) => {
-  return {
-    type:'SET_INTERVAL_EVENT',
-    payload : timeEvent
-  }
-}
-export const counterNya = (second) => {
-  return {
-    type:'SET_INTERVAL_COUNTER',
-    payload : second+1
-  }
-}
-export const hapusInterval = () => {
-  return {
-    type:'REMOVE_INTERVAL'
-  }
-}
 export const setIsOrdered = (data) => {
   /*
   Tipe Objek ={
@@ -26,5 +9,16 @@ export const setIsOrdered = (data) => {
   return {
     type:'SET_ISORDERED',
     payload:data
+  }
+}
+export const setAnimationOrder = (jenis) => {
+  return {
+    type:'SET_ANIMATION_ORDER',
+    jenis:jenis
+  }
+}
+export const clearDataHome = () => {
+  return {
+    type:'CLEAR_DATA_HOME'
   }
 }

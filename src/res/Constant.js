@@ -1,5 +1,7 @@
 export default Constant = {
-  host:'https://kedai-azhari.herokuapp.com/api/v1'
+  // host:'https://kedai-azhari.herokuapp.com/api/v1'
+  // host:'http://192.168.0.24:5000/api/v1'
+  host:'https://kedai-azhari2.herokuapp.com/api/v1'
 }
 export const convertToRupiah = (angka) => {
   let rupiah = '';

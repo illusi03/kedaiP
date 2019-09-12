@@ -31,7 +31,7 @@ class StackCheck extends Component {
         <Text style={{
           fontSize: 20,
           fontWeight: 'bold'
-        }}>HARAP TUNGGU...</Text>
+        }}>Please wait ...</Text>
       </View>
     )
   }

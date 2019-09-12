@@ -109,8 +109,6 @@ class CompListOrder extends Component {
             </View>
           </View>
         </View>
-        :
-        false
     )
   }
 }

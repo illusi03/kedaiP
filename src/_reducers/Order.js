@@ -1,6 +1,6 @@
 initialStateOrder = {
   dataItem: '',
-  dataItemTmp:[],
+  dataItemTmp: [],
   isLoading: true,
   subTotalOrder: 0
 }
@@ -116,6 +116,15 @@ export default Order = (state = initialStateOrder, action) => {
       }
       break
 
+    case 'REMOVE_ALL_ORDER':
+      return {
+        ...state,
+        dataItem: '',
+        dataItemTmp: [],
+        isLoading: true,
+        subTotalOrder: 0
+      }
+      break
     default:
       return state
       break

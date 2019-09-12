@@ -28,10 +28,10 @@ class ScreenLogin extends Component {
         tableNumber: this.state.textTblNumber,
         isPaid: false
       }))
+      await AsyncStorage.setItem('idTransaction', `${this.props.Transaction.dataItem.data.id}`)
       await this.setState({
         isLoading: this.props.Transaction.isLoading
       })
-      await AsyncStorage.setItem('idTransaction', `${this.props.Transaction.dataItem.data.id}`)
       await this.props.navigation.navigate('StackPrivate')
     } else {
       alert('Masukan Nomor Meja Terlebih Dahulu')

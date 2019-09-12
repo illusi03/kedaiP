@@ -19,7 +19,8 @@ import CompTouchable from './CompTouchable'
 import { reRenderMenu, getMenuWhereCategory, getMenu } from '../../_actions/Menu'
 import { reRenderCategory, getCategory } from '../../_actions/Category'
 import { addOrder, editOrder, addOrderBiasa } from '../../_actions/Order'
-import { setIntervalNya, counterNya, isOrdered } from '../../_actions/Home'
+import {isOrdered,setAnimationOrder } from '../../_actions/Home'
+import { setIntervalNya, counterNya } from '../../_actions/Timer'
 import CompListMenu from './CompListMenu'
 
 var { height, width } = Dimensions.get('window')
@@ -38,22 +39,10 @@ class ScreenHome extends Component {
   }
   callBackMenus = (bisa) => {
     if(bisa){
-      this.bouncerIn()
+      this.props.dispatch(setAnimationOrder('in'))
     }else{
-      this.bouncerOut()
+      this.props.dispatch(setAnimationOrder('out'))
     }
-  }
-  bouncerIn = () => {
-    Animated.spring(this.state.xyValue, {
-      toValue: { x: 12, y: height-110 },
-      duration: 2000
-    }).start()
-  }
-  bouncerOut = () => {
-    Animated.spring(this.state.xyValue, {
-      toValue: { x: 12, y: height+100 },
-      duration: 1000
-    }).start()
   }
   fadeIn = () => {
     Animated.timing(this.state.fadeValue, {
@@ -131,7 +120,7 @@ class ScreenHome extends Component {
     this.getNoMeja()
     this.props.dispatch(setIntervalNya(
       setInterval(() => {
-        this.props.dispatch(counterNya(this.props.Home.timer))
+        this.props.dispatch(counterNya(this.props.Timer.timer))
       }, 1000)
     ))
     // this.fadeIn()
@@ -163,7 +152,7 @@ class ScreenHome extends Component {
           <View style={{ flexDirection: 'row' }}>
             <IconIon name='md-timer' size={17} style={{ marginRight: 5 }}></IconIon>
             <Text style={[Styles.hurufKonten, { fontWeight: 'bold' }]}>
-              {this.props.Home.timerString}
+              {this.props.Timer.timerString}
             </Text>
           </View>
         </View>
@@ -277,7 +266,7 @@ class ScreenHome extends Component {
           </View>
         </View>
         {true ?
-          <Animated.View style={[this.state.xyValue.getLayout(), {
+          <Animated.View style={[this.props.Home.xyValue.getLayout(), {
             width: '95%',
             height: 75,
             position: 'absolute',
@@ -352,7 +341,8 @@ const mapStateToProps = (state) => {
     Menu: state.Menu,
     Category: state.Category,
     Home: state.Home,
-    Order: state.Order
+    Order: state.Order,
+    Timer: state.Timer
   }
 }
 
