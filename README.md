@@ -1,5 +1,11 @@
 ## About Application
 This application is called "PapaLapar" , the computing application of ordering food (Mobile based , on the restaurant).
+
+## What News Feature ?
+* Responsive UI to another Smartphone
+* Better UI / UX 
+* Sending data to database in batches
+
 <br>
 
 ### Demo App
