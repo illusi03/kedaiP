@@ -2,6 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 
 import { Styles, Color } from '../../res/Styles'
 class CompTouchable extends Component {
@@ -11,15 +17,14 @@ class CompTouchable extends Component {
         backgroundColor: Color.darkPrimaryColor,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 5,
-        margin:5,
-        width:100
+        padding: wp(1.5),
+        margin:wp(1.5),
+        width:wp(22)
       }]}
       onPress={this.props.onPress}
       onLongPress={this.props.onLongPress}
       >
         <Text style={[Styles.hurufKonten, {
-          fontSize: 15,
           fontWeight: 'bold',
           textAlign: 'center',
           color:Color.whiteColor

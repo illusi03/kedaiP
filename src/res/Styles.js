@@ -1,4 +1,10 @@
 import { StyleSheet} from 'react-native'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 
 export const Color = {
   backgroundColor : '#FAFAFA',
@@ -19,7 +25,7 @@ export const Styles = StyleSheet.create({
     flex:1
   },
   content:{
-    padding:10
+    padding:wp(2)
   },
   cardSimpleContainer: {
     shadowColor: '#000000',
@@ -34,7 +40,7 @@ export const Styles = StyleSheet.create({
     elevation: 4
   },
   hurufKonten:{
-    fontSize:16,
+    fontSize:wp(3),
     color:Color.primaryTextColor
   }
 })

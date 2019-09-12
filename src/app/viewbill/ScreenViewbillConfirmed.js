@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image, BackHandler } from 'react-native'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-community/async-storage';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import IconIon from 'react-native-vector-icons/Ionicons'
@@ -154,21 +160,21 @@ class ScreenViewbillConfirmed extends Component {
       <View style={[Styles.container, {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 10
+        padding: wp(2)
       }]}>
         <View style={[Styles.content, Styles.cardSimpleContainer, {
           backgroundColor: Color.whiteColor,
-          width: '100%',
-          height: '100%',
+          width: wp(100),
+          height: hp(100),
           justifyContent: 'flex-start',
           alignItems: 'center'
         }]}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={[Styles.hurufKonten, {
-              fontSize: 20,
+              fontSize: wp(5),
               fontWeight: 'bold',
               textAlign: 'center',
-              marginBottom: 5,
+              marginBottom: wp(0.5),
               flex: 1
             }]}>
               Billing </Text>
@@ -197,7 +203,8 @@ class ScreenViewbillConfirmed extends Component {
             }}
             style={{
               flex: 1,
-              width: '100%'
+              width: wp(100),
+              paddingHorizontal: wp(1.5)
             }}
           />
           {/* Divider */}
@@ -205,51 +212,65 @@ class ScreenViewbillConfirmed extends Component {
             style={{
               borderBottomColor: Color.darkPrimaryColor,
               borderBottomWidth: 2,
-              width: '100%',
-              marginVertical: 5
+              width: wp(95),
+              marginVertical: hp(0.5)
             }}
           />
 
           {/* Option Bawah */}
-          <View style={[Styles.cardSimpleContainer, {
-            elevation: 2,
-            height: 150,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 5,
-          }]}>
-            <CompOptionBot subTotal={this.state.subStateTotal} />
-          </View>
+          {this.state.isDoneWaiting ?
+            <View style={[Styles.cardSimpleContainer, {
+              elevation: 2,
+              height: hp(16.4),
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: hp(2.5)
+            }]}>
+              <CompOptionBot subTotal={this.state.subStateTotal} />
+            </View>
+            :
+            <View style={[Styles.cardSimpleContainer, {
+              elevation: 2,
+              height: hp(16.4),
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: hp(5),
+            }]}>
+              <CompOptionBot subTotal={this.state.subStateTotal} />
+            </View>
+          }
 
           {this.state.isDoneWaiting ?
             <View style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginBottom: 15
+              marginBottom: hp(5)
             }}>
-              <TouchableOpacity style={[Styles.cardSimpleContainer, {
-                backgroundColor: Color.darkPrimaryColor,
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                padding: 5,
-                margin: 5,
-                height: '100%',
-                flexDirection: 'row'
-              }]}
-                onPress={this.aksiCallBill}
-              >
-                <IconOctic name='checklist' color={Color.whiteColor} size={25} style={{
-                  marginHorizontal: 10
-                }}></IconOctic>
-                <Text style={[Styles.hurufKonten, {
-                  fontSize: 15,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  color: Color.whiteColor,
-                  marginRight: 10
-                }]}>
-                  CALL BILL</Text>
-              </TouchableOpacity>
+              {!this.props.Transaction.isLoading ?
+                <TouchableOpacity style={[Styles.cardSimpleContainer, {
+                  backgroundColor: Color.darkPrimaryColor,
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  height: hp(5),
+                  flexDirection: 'row'
+                }]}
+                  onPress={this.aksiCallBill}
+                >
+                  <IconOctic name='checklist' color={Color.whiteColor} size={wp(5)} style={{
+                    marginHorizontal: wp(2)
+                  }}></IconOctic>
+                  <Text style={[Styles.hurufKonten, {
+                    fontSize: wp(3.5),
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    color: Color.whiteColor,
+                    marginRight: wp(1.5)
+                  }]}>
+                    CALL BILL</Text>
+                </TouchableOpacity>
+                :
+                <ActivityIndicator size={hp(5)}></ActivityIndicator>
+              }
             </View>
             : false}
         </View>

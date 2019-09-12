@@ -3,6 +3,12 @@ import { connect } from 'react-redux'
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image, BackHandler, ScrollView } from 'react-native'
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import IconIon from 'react-native-vector-icons/Ionicons'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 
 import { hapusInterval } from '../../_actions/Timer'
 import { Styles, Color } from '../../res/Styles'
@@ -48,24 +54,24 @@ class ScreenPay extends Component {
         <View style={[Styles.container, {
           justifyContent: 'flex-start',
           alignItems: 'center',
-          padding: 10
+          padding: wp(3.5)
         }]}>
           <ScrollView style={{
-            width: '100%'
+            width: wp(100)
           }}>
             <View style={[Styles.content, Styles.cardSimpleContainer, {
               backgroundColor: Color.whiteColor,
-              width: '100%',
-              height: '100%',
+              width: wp(100),
+              height: hp(100),
               justifyContent: 'flex-start',
               alignItems: 'center'
             }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 20,
+                  fontSize: wp(4),
                   fontWeight: 'bold',
                   textAlign: 'center',
-                  marginBottom: 5,
+                  marginBottom: wp(2.5),
                   flex: 1
                 }]}>
                   Payment Session</Text>
@@ -76,78 +82,79 @@ class ScreenPay extends Component {
                 style={{
                   borderBottomColor: Color.darkPrimaryColor,
                   borderBottomWidth: 2,
-                  width: '100%',
-                  marginVertical: 5
+                  width: wp(100),
+                  marginVertical: hp(0.5)
                 }}
               />
               <View style={{
                 flex: 1,
-                width: '100%',
+                width: wp(100),
                 justifyContent: 'center',
                 alignItems: 'center'
               }}>
                 <Image
                   source={require('../../assets/Illustrator/receptionist.png')}
                   style={{
-                    width: 250,
-                    height: 250
+                    width: wp(20),
+                    height: hp(20)
                   }}
                 ></Image>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 20,
+                  fontSize: wp(4),
                   fontWeight: 'bold',
-                  marginBottom: 10
+                  marginBottom: wp(3),
+                  textAlign: 'center'
                 }]}>
                   PLEASE BRING THE IPAD TO THE CASHIER
               </Text>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 17,
+                  fontSize: wp(3.5),
                   fontWeight: 'bold',
+                  textAlign: 'center'
                 }]}>
                   TO PROCEED WITH THE PAYMENT
               </Text>
 
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 30,
+                  fontSize: wp(5.2),
                   fontWeight: 'bold',
-                  marginTop: 30,
-                  marginBottom: 5
+                  marginTop: wp(5),
+                  marginBottom: wp(3.5)
                 }]}>
                   # {this.state.noMeja}
                 </Text>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 17,
+                  fontSize: wp(4),
                   fontWeight: 'bold',
                   marginBottom: 5
                 }]}>
                   With Transaction ID : {this.state.idTransaction}
                 </Text>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 17,
+                  fontSize: wp(4),
                   fontWeight: 'bold',
-                  marginBottom: 5
+                  marginBottom: wp(1.5)
                 }]}>
                   Thank you
               </Text>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 16,
+                  fontSize: wp(4),
                   fontWeight: 'bold',
                 }]}>
                   Time Spent
               </Text>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 15,
                   fontWeight: 'bold',
                 }]}>
                   {this.props.Timer.timerString}
                 </Text>
                 <TouchableOpacity style={[Styles.cardSimpleContainer, {
                   backgroundColor: Color.darkPrimaryColor,
-                  width: 100,
-                  height: 50,
+                  width: wp(20),
+                  height: hp(6),
                   justifyContent: 'center',
-                  padding: 10,
-                  marginTop: 10
+                  padding: wp(3),
+                  marginTop: wp(3)
                 }]}
                   onPress={() => BackHandler.exitApp()}
                 >
@@ -162,11 +169,11 @@ class ScreenPay extends Component {
         </View>
         :
         <ActivityIndicator style={{
-          flex:1,
-          justifyContent:'center',
-          alignSelf:'center'
+          flex: 1,
+          justifyContent: 'center',
+          alignSelf: 'center'
         }}
-        size={40}
+          size={wp(30)}
         >
 
         </ActivityIndicator>

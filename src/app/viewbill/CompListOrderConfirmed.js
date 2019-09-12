@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { connect } from 'react-redux'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 
 import { Styles, Color } from '../../res/Styles'
 import { convertToRupiah } from '../../res/Constant'
@@ -18,9 +24,9 @@ class CompListOrderConfirmed extends Component {
           backgroundColor: Color.whiteColor,
           justifyContent: 'flex-start',
           alignItems: 'flex-start',
-          padding: 5,
-          margin: 5,
-          height: 100,
+          padding: wp(1.5),
+          margin: wp(1.5),
+          height: hp(12),
           flexDirection: 'row',
           position: 'relative',
           borderWidth: 2,
@@ -30,16 +36,16 @@ class CompListOrderConfirmed extends Component {
           {this.props.item.status == false ?
             <TouchableOpacity style={Styles.cardSimpleContainer, [{
               position: 'absolute',
-              right: 15,
-              bottom: 15,
+              right: wp(2),
+              bottom: wp(2),
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: Color.warningColor,
-              paddingHorizontal: 10,
-              paddingVertical: 10,
-              borderRadius: 5,
-              width: 100,
+              paddingHorizontal: wp(1.5),
+              paddingVertical: wp(1.5),
+              borderRadius: wp(0.5),
+              width: wp(25),
               elevation: 3,
               flexDirection: 'row'
             }]}
@@ -48,56 +54,56 @@ class CompListOrderConfirmed extends Component {
               <Text style={[Styles.hurufKonten, {
                 color: Color.whiteColor,
                 fontWeight: 'bold',
-                fontSize: 18
+                fontSize: wp(4)
               }]}>Waiting</Text>
             </TouchableOpacity>
             :
             <View style={Styles.cardSimpleContainer, [{
               position: 'absolute',
-              right: 15,
-              bottom: 15,
+              right: wp(2),
+              bottom: wp(2),
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: Color.successColor,
-              paddingHorizontal: 10,
-              paddingVertical: 10,
-              borderRadius: 5,
-              width: 100,
+              paddingHorizontal: wp(1.5),
+              paddingVertical: wp(1.5),
+              borderRadius: wp(0.5),
+              width: wp(25),
               elevation: 3,
               flexDirection: 'row'
             }]}>
               <Text style={[Styles.hurufKonten, {
                 color: Color.whiteColor,
                 fontWeight: 'bold',
-                fontSize: 18
+                fontSize: wp(4)
               }]}>Success</Text>
             </View>
           }
           <Image source={{ uri: this.props.item.menu.image }} style={{
-            width: 100,
-            height: '100%',
-            marginRight: 20,
-            borderRadius: 10
+            width: wp(20),
+            height:hp(10),
+            marginRight: wp(4),
+            borderRadius: wp(2)
           }}></Image>
           <View style={{
             flexDirection: 'column',
             marginTop: 5
           }}>
             <Text style={[Styles.hurufKonten, {
-              fontSize: 15,
+              fontSize:wp(3),
               fontWeight: 'bold',
               textAlign: 'left'
             }]}>{this.props.item.menu.name}</Text>
             <Text style={[Styles.hurufKonten, {
-              fontSize: 19,
+              fontSize:wp(4),
               fontWeight: 'bold',
               textAlign: 'left'
             }]}>
               {convertToRupiah(this.props.item.price * this.props.item.qty)} ({this.props.item.qty})</Text>
             <View style={{ flexDirection: 'row' }}>
               <Text style={[Styles.hurufKonten, {
-                fontSize: 15,
+                fontSize:wp(3),
                 fontWeight: 'bold',
                 textAlign: 'left'
               }]}>

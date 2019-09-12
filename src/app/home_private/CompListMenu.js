@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, Text, TouchableOpacity, FlatList, Image, ScrollView, ActivityIndicator, ToastAndroid } from 'react-native'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import IconMaterialCom from 'react-native-vector-icons/MaterialCommunityIcons'
 import IconFA5 from 'react-native-vector-icons/FontAwesome5'
@@ -152,10 +158,10 @@ class CompListMenu extends Component {
       <View style={[Styles.cardSimpleContainer, {
         backgroundColor: Color.whiteColor,
         justifyContent: 'flex-start',
-        alignItems: 'center',
-        padding: 5,
-        margin: 5,
-        height: 100,
+        alignItems: 'flex-start',
+        padding: wp(1.5),
+        margin: wp(1.5),
+        height: hp(12),
         flexDirection: 'row',
         position: 'relative',
         borderWidth: 2,
@@ -164,16 +170,16 @@ class CompListMenu extends Component {
         {this.state.isOrdered ?
           <View style={Styles.cardSimpleContainer, [{
             position: 'absolute',
-            right: 15,
-            bottom: 15,
+            right: wp(2),
+            bottom: wp(2),
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: Color.whiteColor,
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            borderRadius: 5,
-            width: 100,
+            paddingHorizontal: wp(1.5),
+            paddingVertical: wp(1.5),
+            borderRadius: wp(0.5),
+            width: wp(25),
             elevation: 3,
             flexDirection: 'row'
           }]}>
@@ -181,19 +187,17 @@ class CompListMenu extends Component {
               style={{
                 flex: 1,
                 alignItems:'flex-start',
-                justifyContent:'center',
-                height:'100%'
+                justifyContent:'center'
               }}
               onPress={() => this.aksiRemoveOrder(this.props.itemNya.id, this.props.idTransaction)}
             >
               <IconFA5
                 name='minus'
-                size={15}
+                size={wp(3.5)}
                 color={Color.accentColor}
               ></IconFA5>
             </TouchableOpacity>
             <Text style={[Styles.hurufKonten, {
-              fontSize: 14,
               fontWeight: 'bold',
               flex:1,
               textAlign:'center'
@@ -202,14 +206,13 @@ class CompListMenu extends Component {
               style={{
                 flex: 1,
                 alignItems:'flex-end',
-                justifyContent:'center',
-                height:'100%'
+                justifyContent:'center'
               }}
               onPress={() => this.aksiAddOrder(this.props.itemNya.id, this.props.idTransaction)}
             >
               <IconFA5
                 name='plus'
-                size={15}
+                size={wp(3.5)}
                 color={Color.accentColor}
               ></IconFA5>
             </TouchableOpacity>
@@ -217,16 +220,18 @@ class CompListMenu extends Component {
           :
           <TouchableOpacity style={{
             position: 'absolute',
-            right: 15,
-            bottom: 15,
+            right: wp(2),
+            bottom: wp(2),
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: Color.accentColor,
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            borderRadius: 5,
-            width: 100
+            paddingHorizontal: wp(1.5),
+            paddingVertical: wp(1.5),
+            borderRadius: wp(0.5),
+            width: wp(25),
+            elevation: 3,
+            flexDirection: 'row'
           }}
             onPress={() => this.aksiAddOrder(this.props.itemNya.id, this.props.idTransaction)}
           >
@@ -234,16 +239,15 @@ class CompListMenu extends Component {
               {[Styles.hurufKonten,
               {
                 color: Color.whiteColor,
-                fontSize: 14,
-                marginLeft: 20,
-                marginRight: 5,
+                marginLeft: wp(5),
+                marginRight: wp(2),
                 fontWeight: 'bold',
                 flex:1
               }]}
             >ADD</Text>
             <IconFA5
               name='plus'
-              size={15}
+              size={wp(3.5)}
               color={Color.whiteColor}
               style={{
                 flex:1,
@@ -254,20 +258,20 @@ class CompListMenu extends Component {
         }
 
         <Image source={{ uri: this.props.itemNya.image }} style={{
-          width: 100,
-          height: '100%',
-          marginRight: 20,
-          borderRadius: 10
+          width: wp(20),
+          height:hp(10),
+          marginRight: wp(4),
+          borderRadius: wp(2)
         }}></Image>
         <View style={{ flexDirection: 'column' }}>
           <Text style={[Styles.hurufKonten, {
-            fontSize: 15,
+            fontSize:wp(3),
             fontWeight: 'bold',
-            textAlign: 'center'
+            textAlign: 'left'
           }]}>
             {this.props.itemNya.name}</Text>
           <Text style={[Styles.hurufKonten, {
-            fontSize: 17,
+            fontSize:wp(4),
             fontWeight: 'bold',
             textAlign: 'left'
           }]}>

@@ -6,6 +6,13 @@ import {
   ActivityIndicator, Animated, Easing,
   Dimensions
 } from 'react-native'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
+
 import IconIon from 'react-native-vector-icons/Ionicons'
 import IconAntDesign from 'react-native-vector-icons/AntDesign'
 import IconMaterialCom from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -19,11 +26,9 @@ import CompTouchable from './CompTouchable'
 import { reRenderMenu, getMenuWhereCategory, getMenu } from '../../_actions/Menu'
 import { reRenderCategory, getCategory } from '../../_actions/Category'
 import { addOrder, editOrder, addOrderBiasa } from '../../_actions/Order'
-import {isOrdered,setAnimationOrder } from '../../_actions/Home'
+import { isOrdered, setAnimationOrder } from '../../_actions/Home'
 import { setIntervalNya, counterNya } from '../../_actions/Timer'
 import CompListMenu from './CompListMenu'
-
-var { height, width } = Dimensions.get('window')
 
 class ScreenHome extends Component {
   state = {
@@ -35,12 +40,11 @@ class ScreenHome extends Component {
     toogleStarted: '',
     isQtyMenu: false,
     fadeValue: new Animated.Value(0),
-    xyValue: new Animated.ValueXY({ x: 12, y:height  })
   }
   callBackMenus = (bisa) => {
-    if(bisa){
+    if (bisa) {
       this.props.dispatch(setAnimationOrder('in'))
-    }else{
+    } else {
       this.props.dispatch(setAnimationOrder('out'))
     }
   }
@@ -117,6 +121,7 @@ class ScreenHome extends Component {
   }
 
   componentDidMount() {
+    lor(this)
     this.getNoMeja()
     this.props.dispatch(setIntervalNya(
       setInterval(() => {
@@ -125,6 +130,9 @@ class ScreenHome extends Component {
     ))
     // this.fadeIn()
     // this.cekIsStartedMenus()
+  }
+  componentWillUnmount() {
+    rol()
   }
   render() {
     return (
@@ -136,11 +144,11 @@ class ScreenHome extends Component {
         {/* Header */}
         <View style={[Styles.content, Styles.cardSimpleContainer, {
           backgroundColor: Color.whiteColor,
-          width: '100%',
-          height: 50,
+          width: wp(100),
+          height: hp(7),
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: 10,
+          marginBottom: hp(0.5),
           flexDirection: 'row'
         }]}>
           <Text style={[Styles.hurufKonten, { fontWeight: 'bold' }]}>Tbl Num#{this.state.noMeja}</Text>
@@ -150,7 +158,7 @@ class ScreenHome extends Component {
             textAlign: 'center'
           }]}>Kedai PapaLapar</Text>
           <View style={{ flexDirection: 'row' }}>
-            <IconIon name='md-timer' size={17} style={{ marginRight: 5 }}></IconIon>
+            <IconIon name='md-timer' size={wp(4)} style={{ marginRight: wp(2) }}></IconIon>
             <Text style={[Styles.hurufKonten, { fontWeight: 'bold' }]}>
               {this.props.Timer.timerString}
             </Text>
@@ -160,12 +168,12 @@ class ScreenHome extends Component {
         {/* List Category */}
         <View style={[Styles.content, {
           backgroundColor: Color.whiteColor,
-          width: '100%',
-          height: 75,
+          width: wp(100),
+          height: hp(8),
           justifyContent: 'center',
           alignItems: 'flex-start',
-          marginBottom: 5,
-          paddingBottom: 5
+          marginBottom: wp(0.5),
+          paddingBottom: wp(0.5)
         }]}>
           {this.props.Category.isLoading ?
             false
@@ -178,15 +186,14 @@ class ScreenHome extends Component {
                     backgroundColor: Color.darkPrimaryColor,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    padding: 5,
-                    margin: 5,
-                    width: 100,
+                    padding: wp(1.5),
+                    margin: wp(1.5),
+                    width: wp(22),
                     flex: 1
                   }]}
                     onPress={() => this.props.dispatch(getMenu())}
                   >
                     <Text style={[Styles.hurufKonten, {
-                      fontSize: 15,
                       fontWeight: 'bold',
                       textAlign: 'center',
                       color: Color.whiteColor
@@ -212,15 +219,15 @@ class ScreenHome extends Component {
         {/* List Menu */}
         <View style={[Styles.content, {
           backgroundColor: Color.whiteColor,
-          width: '100%',
+          width: wp(100),
           flex: 7,
-          justifyContent: 'center',
-          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
           marginBottom: 0
         }]}>
-          <View style={{ height: '100%', width: '100%' }}>
+          <View style={{ height: hp(79), width: wp(97) }}>
             {this.props.Menu.isLoading ?
-              <ActivityIndicator size={70} color={Color.darkPrimaryColor} style={{
+              <ActivityIndicator size={wp(10)} color={Color.darkPrimaryColor} style={{
                 flex: 1,
                 alignSelf: 'center'
               }}></ActivityIndicator>
@@ -230,10 +237,9 @@ class ScreenHome extends Component {
                 ListHeaderComponent={() => {
                   return (
                     <Text style={[Styles.hurufKonten, {
-                      fontSize: 17,
                       fontWeight: 'bold',
                       textAlign: 'center',
-                      marginBottom: 5
+                      fontSize: wp(4)
                     }]}>List Menu From {this.state.initNameCategory} Category</Text>
                   )
                 }}
@@ -244,18 +250,17 @@ class ScreenHome extends Component {
                   return (
                     <CompListMenu
                       itemNya={item}
-                      idTransaction={this.state.idTransaction} 
+                      idTransaction={this.state.idTransaction}
                       callBackNya={this.callBackMenus}
-                      />
+                    />
                   )
                 }}
                 ListFooterComponent={() => {
                   if (this.props.Home.isOrdered) {
                     return (
                       <View style={{
-                        width: '95%',
-                        height: 100,
-                        backgroundColor: 'transparent'
+                        width: wp(100),
+                        height: hp(12)
                       }}></View>
                     )
                   }
@@ -267,24 +272,24 @@ class ScreenHome extends Component {
         </View>
         {true ?
           <Animated.View style={[this.props.Home.xyValue.getLayout(), {
-            width: '95%',
-            height: 75,
+            width: wp(95),
+            height: hp(12),
             position: 'absolute',
             bottom: 0,
-            marginBottom: 25,
-            borderRadius: 5
+            marginBottom: wp(10),
+            borderRadius: wp(1.5)
           }]}>
             <TouchableOpacity style={[Styles.cardSimpleContainer, {
               backgroundColor: Color.darkPrimaryColor,
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
               flexDirection: 'row',
-              paddingVertical: 10,
-              paddingHorizontal: 15
+              paddingVertical: wp(2),
+              paddingHorizontal: wp(3)
             }]}
               activeOpacity={0.9}
               onPress={() => this.props.navigation.navigate('SWScreenViewbill')}
-              // onPress={this.bouncer}
+            // onPress={this.bouncer}
             >
               <View style={{
                 flex: 1
@@ -293,21 +298,21 @@ class ScreenHome extends Component {
                   flexDirection: 'row'
                 }}>
                   <Text style={[Styles.hurufKonten, {
-                    fontSize: 18,
+                    fontSize: wp(4),
                     fontWeight: 'bold',
                     textAlign: 'center',
                     color: Color.whiteColor
                   }]}>
                     {this.props.Home.jmlKeranjang} Item | </Text>
                   <Text style={[Styles.hurufKonten, {
-                    fontSize: 18,
+                    fontSize: wp(4),
                     fontWeight: 'bold',
                     textAlign: 'center',
                     color: Color.whiteColor
                   }]}>
                     {convertToRupiah(this.props.Home.jmlHarga)} | </Text>
                   <Text style={[Styles.hurufKonten, {
-                    fontSize: 16,
+                    fontSize: wp(3.5),
                     fontWeight: 'bold',
                     color: Color.whiteColor,
                     alignSelf: 'center'
@@ -315,18 +320,18 @@ class ScreenHome extends Component {
                     {convertToRupiah(this.props.Home.estimasiHarga + this.props.Home.jmlHarga)} (Est)</Text>
                 </View>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 15,
+                  fontSize: wp(3.5),
                   fontWeight: 'bold',
                   color: Color.whiteColor,
                   alignSelf: 'flex-start',
-                  marginTop: 5
+                  marginTop: wp(1.2)
                 }]}>
                   Please tap for detail bill</Text>
               </View>
               <View style={{
                 alignSelf: 'center'
               }}>
-                <IconMaterialCom name='cart' size={40} color={Color.whiteColor}></IconMaterialCom>
+                <IconMaterialCom name='cart' size={wp(10)} color={Color.whiteColor}></IconMaterialCom>
               </View>
             </TouchableOpacity>
           </Animated.View>

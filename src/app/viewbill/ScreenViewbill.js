@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image, Alert } from 'react-native'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol
+} from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-community/async-storage';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
 import IconIon from 'react-native-vector-icons/Ionicons'
@@ -27,7 +33,7 @@ class ScreenViewbill extends Component {
   }
   aksiCallBill = async () => {
     let orders = []
-    await this.props.Order.dataItemTmp.map( (item,index) => {
+    await this.props.Order.dataItemTmp.map((item, index) => {
       item.status = false
       orders.push(item)
     })
@@ -178,6 +184,7 @@ class ScreenViewbill extends Component {
     })
   }
   componentDidMount() {
+    lor(this)
     this.getOrderList()
   }
   componentWillUnmount() {
@@ -185,6 +192,7 @@ class ScreenViewbill extends Component {
       this.props.dispatch(setAnimationOrder('out'))
     }
     this.props.dispatch(getMenu())
+    rol()
   }
   render() {
     return (
@@ -192,12 +200,12 @@ class ScreenViewbill extends Component {
         <View style={[Styles.container, {
           justifyContent: 'flex-start',
           alignItems: 'center',
-          padding: 10
+          padding: wp(2)
         }]}>
           <View style={[Styles.content, Styles.cardSimpleContainer, {
             backgroundColor: Color.whiteColor,
-            width: '100%',
-            height: '100%',
+            width: wp(100),
+            height: hp(100),
             justifyContent: 'flex-start',
             alignItems: 'center'
           }]}>
@@ -206,21 +214,19 @@ class ScreenViewbill extends Component {
                 style={{ flex: 1, alignSelf: 'flex-start' }}
                 onPress={() => this.props.navigation.navigate('ScreenHome')}
               >
-                <IconIon name='md-arrow-round-back' size={33}></IconIon>
+                <IconIon name='md-arrow-round-back' size={wp(7)}></IconIon>
               </TouchableOpacity>
               <Text style={[Styles.hurufKonten, {
-                fontSize: 20,
+                fontSize: wp(5),
                 fontWeight: 'bold',
                 textAlign: 'center',
-                marginBottom: 5,
+                marginBottom: wp(0.5),
                 flex: 1
               }]}>
                 Billing </Text>
               <Text style={[Styles.hurufKonten, {
-                fontSize: 20,
                 fontWeight: 'bold',
                 textAlign: 'center',
-                marginBottom: 5,
                 flex: 1
               }]}>
               </Text>
@@ -231,8 +237,8 @@ class ScreenViewbill extends Component {
               style={{
                 borderBottomColor: Color.darkPrimaryColor,
                 borderBottomWidth: 2,
-                width: '100%',
-                marginVertical: 5
+                width: wp(95),
+                marginVertical: wp(1.4)
               }}
             />
 
@@ -250,7 +256,8 @@ class ScreenViewbill extends Component {
               }}
               style={{
                 flex: 1,
-                width: '100%'
+                width: wp(100),
+                paddingHorizontal: wp(1.5)
               }}
             />
             {/* Divider */}
@@ -258,18 +265,17 @@ class ScreenViewbill extends Component {
               style={{
                 borderBottomColor: Color.darkPrimaryColor,
                 borderBottomWidth: 2,
-                width: '100%',
-                marginVertical: 5
+                width: wp(95),
+                marginVertical: hp(0.5)
               }}
             />
 
             {/* Option Bawah */}
             <View style={[Styles.cardSimpleContainer, {
               elevation: 2,
-              height: 150,
+              height: hp(16.4),
               flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginBottom: 5,
+              justifyContent: 'space-between'
             }]}>
               <CompOptionBot subTotal={this.state.subStateTotal} />
             </View>
@@ -278,18 +284,18 @@ class ScreenViewbill extends Component {
             <View style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginBottom: 15
+              marginBottom: hp(5),
+              marginTop: hp(2)
             }}>
               <TouchableOpacity style={[Styles.cardSimpleContainer, {
                 backgroundColor: Color.darkPrimaryColor,
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                padding: 5,
-                margin: 5,
-                height: '100%',
+                margin: wp(0.5),
+                height: hp(5),
                 flexDirection: 'row'
               }]}
-                onPress={ () => 
+                onPress={() =>
                   Alert.alert(
                     'Confirm Order',
                     'Are you sure to order this ?',
@@ -308,15 +314,15 @@ class ScreenViewbill extends Component {
                   )
                 }
               >
-                <IconOctic name='checklist' color={Color.whiteColor} size={25} style={{
-                  marginHorizontal: 10
+                <IconOctic name='checklist' color={Color.whiteColor} size={wp(5)} style={{
+                  marginHorizontal: wp(2)
                 }}></IconOctic>
                 <Text style={[Styles.hurufKonten, {
-                  fontSize: 15,
+                  fontSize: wp(3.5),
                   fontWeight: 'bold',
                   textAlign: 'center',
                   color: Color.whiteColor,
-                  marginRight: 10
+                  marginRight: wp(1.5)
                 }]}>
                   CONFIRM</Text>
               </TouchableOpacity>
